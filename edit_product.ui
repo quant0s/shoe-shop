@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ProductEditWindow</class>
+ <widget class="QWidget" name="ProductEditWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>950</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Редактирование товара</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QScrollArea {
+                border: none;
+                background-color: white;
+            }
+            QScrollBar:vertical {
+                border: none;
+                background: #f0f0f0;
+                width: 10px;
+                margin: 0px;
+            }
+            QScrollBar::handle:vertical {
+                background: #c0c0c0;
+                min-height: 20px;
+                border-radius: 5px;
+            }
+            QScrollBar::handle:vertical:hover {
+                background: #a0a0a0;
+            }
+            QScrollBar:horizontal {
+                border: none;
+                background: #f0f0f0;
+                height: 10px;
+                margin: 0px;
+            }
+            QScrollBar::handle:horizontal {
+                background: #c0c0c0;
+                min-width: 20px;
+                border-radius: 5px;
+            }
+            QScrollBar::handle:horizontal:hover {
+                background: #a0a0a0;
+            }</string>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>930</width>
+        <height>580</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>930</width>
+        <height>580</height>
+       </size>
+      </property>
+      <layout class="QVBoxLayout" name="mainLayout">
+       <property name="spacing">
+        <number>15</number>
+       </property>
+       <property name="leftMargin">
+        <number>25</number>
+       </property>
+       <property name="topMargin">
+        <number>25</number>
+       </property>
+       <property name="rightMargin">
+        <number>25</number>
+       </property>
+       <property name="bottomMargin">
+        <number>25</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="headerLabel">
+         <property name="text">
+          <string>Редактирование товара</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="minimumHeight">
+          <number>40</number>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QLabel {
+                font-size: 15px;
+                font-weight: bold;
+                color: black;
+                padding: 8px;
+                margin-bottom: 5px;
+                border-bottom: 1px solid #7FFF00;
+            }</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="mainContainer">
+         <layout class="QHBoxLayout" name="containerLayout">
+          <property name="spacing">
+           <number>30</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QWidget" name="formContainer">
+            <layout class="QGridLayout" name="formGridLayout">
+             <property name="spacing">
+              <number>12</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <property name="columnMinimumWidth">
+              <number>1</number>
+             </property>
+             <property name="columnMinimumWidth">
+              <number>250</number>
+             </property>
+             <property name="columnMinimumWidth">
+              <number>3</number>
+             </property>
+             <property name="columnMinimumWidth">
+              <number>250</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="nameLabel">
+               <property name="text">
+                <string>Наименование:</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: black; font-size: 13px; font-weight: bold; padding: 3px 0;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="nameEdit">
+               <property name="minimumHeight">
+                <number>26</number>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid #C2C7CB;
+border-radius: 3px;
+padding: 4px 8px;
+background-color: white;
+min-height: 26px;
+font-size: 13px;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="providerLabel">
+               <property name="text">
+                <string>Поставщик:</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: black; font-size: 13px; font-weight: bold; padding: 3px 0;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLineEdit" name="providerEdit">
+               <property name="minimumHeight">
+                <number>26</number>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid #C2C7CB;
+border-radius: 3px;
+padding: 4px 8px;
+background-color: white;
+min-height: 26px;
+font-size: 13px;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="categoryLabel">
+               <property name="text">
+                <string>Категория:</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: black; font-size: 13px; font-weight: bold; padding: 3px 0;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="categoryCombo">
+               <property name="minimumHeight">
+                <number>26</number>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid #C2C7CB;
+border-radius: 3px;
+padding: 4px 8px;
+background-color: white;
+min-height: 26px;
+font-size: 13px;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="priceLabel">
+               <property name="text">
+                <string>Цена:</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: black; font-size: 13px; font-weight: bold; padding: 3px 0;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QDoubleSpinBox" name="priceEdit">
+               <property name="minimumHeight">
+                <number>26</number>
+               </property>
+               <property name="minimum">
+                <double>0.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>1000000.000000000000000</double>
+               </property>
+               <property name="decimals">
+                <number>2</number>
+               </property>
+               <property name="value">
+                <double>0.000000000000000</double>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid #C2C7CB;
+border-radius: 3px;
+padding: 4px 8px;
+background-color: white;
+min-height: 26px;
+font-size: 13px;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="descriptionLabel">
+               <property name="text">
+                <string>Описание:</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: black; font-size: 13px; font-weight: bold; padding: 3px 0;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="descriptionEdit">
+               <property name="minimumHeight">
+                <number>26</number>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid #C2C7CB;
+border-radius: 3px;
+padding: 4px 8px;
+background-color: white;
+min-height: 26px;
+font-size: 13px;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="unitLabel">
+               <property name="text">
+                <string>Единица измерения:</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: black; font-size: 13px; font-weight: bold; padding: 3px 0;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QLineEdit" name="unitEdit">
+               <property name="minimumHeight">
+                <number>26</number>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid #C2C7CB;
+border-radius: 3px;
+padding: 4px 8px;
+background-color: white;
+min-height: 26px;
+font-size: 13px;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="manufacturerLabel">
+               <property name="text">
+                <string>Производитель:</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: black; font-size: 13px; font-weight: bold; padding: 3px 0;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QComboBox" name="manufacturerCombo">
+               <property name="minimumHeight">
+                <number>26</number>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid #C2C7CB;
+border-radius: 3px;
+padding: 4px 8px;
+background-color: white;
+min-height: 26px;
+font-size: 13px;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QLabel" name="quantityLabel">
+               <property name="text">
+                <string>Количество на складе:</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: black; font-size: 13px; font-weight: bold; padding: 3px 0;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="3">
+              <widget class="QSpinBox" name="quantityEdit">
+               <property name="minimumHeight">
+                <number>26</number>
+               </property>
+               <property name="minimum">
+                <number>0</number>
+               </property>
+               <property name="maximum">
+                <number>10000</number>
+               </property>
+               <property name="value">
+                <number>0</number>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid #C2C7CB;
+border-radius: 3px;
+padding: 4px 8px;
+background-color: white;
+min-height: 26px;
+font-size: 13px;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <widget class="QLabel" name="discountLabel">
+               <property name="text">
+                <string>Скидка (%):</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: black; font-size: 13px; font-weight: bold; padding: 3px 0;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="3">
+              <widget class="QDoubleSpinBox" name="discountEdit">
+               <property name="minimumHeight">
+                <number>26</number>
+               </property>
+               <property name="minimum">
+                <double>0.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>100.000000000000000</double>
+               </property>
+               <property name="decimals">
+                <number>2</number>
+               </property>
+               <property name="value">
+                <double>0.000000000000000</double>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid #C2C7CB;
+border-radius: 3px;
+padding: 4px 8px;
+background-color: white;
+min-height: 26px;
+font-size: 13px;</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QWidget" name="imageContainer">
+            <property name="fixedWidth">
+             <number>280</number>
+            </property>
+            <layout class="QVBoxLayout" name="imageLayout">
+             <property name="spacing">
+              <number>12</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="imageLabel">
+               <property name="text">
+                <string>Изображение не выбрано</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>260</width>
+                 <height>180</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>270</width>
+                 <height>190</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border: 1px solid #ccc;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            font-size: 13px;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="imageButtonsLayout">
+               <property name="spacing">
+                <number>8</number>
+               </property>
+               <item>
+                <widget class="QPushButton" name="loadImageBtn">
+                 <property name="text">
+                  <string>Загрузить изображение</string>
+                 </property>
+                 <property name="minimumHeight">
+                  <number>32</number>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QPushButton {
+                background-color: #7FFF00;
+                color: black;
+                padding: 6px 12px;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 13px;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: #6EEF00;
+            }
+            QPushButton:pressed {
+                background-color: #5EDF00;
+            }</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="clearImageBtn">
+                 <property name="text">
+                  <string>Очистить</string>
+                 </property>
+                 <property name="minimumHeight">
+                  <number>32</number>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">QPushButton {
+                background-color: #00FA9A;
+                color: black;
+                padding: 6px 12px;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 13px;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: #00E68A;
+            }
+            QPushButton:pressed {
+                background-color: #00D67A;
+            }</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="buttonsContainer">
+         <property name="minimumHeight">
+          <number>50</number>
+         </property>
+         <layout class="QHBoxLayout" name="buttonsLayout">
+          <property name="spacing">
+           <number>15</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="saveBtn">
+            <property name="text">
+             <string>Сохранить</string>
+            </property>
+            <property name="minimumHeight">
+             <number>35</number>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+                background-color: #7FFF00;
+                color: black;
+                padding: 6px 12px;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 13px;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: #6EEF00;
+            }
+            QPushButton:pressed {
+                background-color: #5EDF00;
+            }</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="cancelBtn">
+            <property name="text">
+             <string>Отмена</string>
+            </property>
+            <property name="minimumHeight">
+             <number>35</number>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+                background-color: #00FA9A;
+                color: black;
+                padding: 6px 12px;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 13px;
+                border: none;
+            }
+            QPushButton:hover {
+                background-color: #00E68A;
+            }
+            QPushButton:pressed {
+                background-color: #00D67A;
+            }</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

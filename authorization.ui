@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LoginWidget</class>
+ <widget class="QWidget" name="LoginWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Авторизация</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget {
+    background-color: white;
+    font-family: 'Times New Roman';
+}
+QLabel, QLineEdit, QPushButton {
+    color: #333333;
+}
+QPushButton#login_btn, 
+QPushButton#guest_btn {
+    background-color: #7FFF00;
+    color: #333333;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 15px;
+    min-width: 160px;
+}
+QPushButton#login_btn:hover, 
+QPushButton#guest_btn:hover {
+    background-color: #6FE600;
+    box-shadow: 0px 3px 6px rgba(127, 255, 0, 0.2);
+}
+QPushButton#login_btn:pressed, 
+QPushButton#guest_btn:pressed {
+    background-color: #5FCC00;
+    box-shadow: 0px 1px 3px rgba(127, 255, 0, 0.3);
+}
+QLineEdit {
+    border: 2px solid #D0D0D0;
+    border-radius: 6px;
+    background-color: white;
+    padding: 10px 15px;
+    color: #333333;
+    selection-background-color: #7FFF00;
+    font-size: 16px;
+}
+QLineEdit:focus {
+    border-color: #7FFF00;
+    background-color: #FAFFFA;
+    box-shadow: 0px 0px 4px rgba(127, 255, 0, 0.2);
+}
+QLineEdit::placeholder {
+    color: #888888;
+}
+QLabel#name_window {
+    color: #222222;
+    padding-bottom: 5px;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="main_layout">
+   <property name="spacing">
+    <number>25</number>
+   </property>
+   <property name="leftMargin">
+    <number>50</number>
+   </property>
+   <property name="topMargin">
+    <number>50</number>
+   </property>
+   <property name="rightMargin">
+    <number>50</number>
+   </property>
+   <property name="bottomMargin">
+    <number>50</number>
+   </property>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QLabel" name="name_window">
+     <property name="font">
+      <font>
+       <family>Times New Roman</family>
+       <pointsize>26</pointsize>
+       <weight>700</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Авторизация</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="fields_layout">
+     <property name="spacing">
+      <number>20</number>
+     </property>
+     <item>
+      <layout class="QVBoxLayout" name="login_layout">
+       <item>
+        <widget class="QLabel" name="text_login">
+         <property name="font">
+          <font>
+           <family>Times New Roman</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Логин</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="username_input">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Times New Roman</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="placeholderText">
+          <string>Введите логин</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="password_layout">
+       <item>
+        <widget class="QLabel" name="text_password">
+         <property name="font">
+          <font>
+           <family>Times New Roman</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Пароль</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="password_input">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Times New Roman</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="echoMode">
+          <enum>QLineEdit::Password</enum>
+         </property>
+         <property name="placeholderText">
+          <string>Введите пароль</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>25</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="buttons_layout">
+     <property name="spacing">
+      <number>20</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="login_btn">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>45</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Times New Roman</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Войти</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="guest_btn">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>45</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Times New Roman</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Войти как гость</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_4">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
