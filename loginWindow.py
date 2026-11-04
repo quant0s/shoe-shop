@@ -157,5 +157,5 @@ class Ui_LoginWindow(object):
         self.text_login.setText(QCoreApplication.translate("LoginWidget", u"Логин", None))
         self.text_password.setText(QCoreApplication.translate("LoginWidget", u"Пароль", None))
         self.guest_btn.setText(QCoreApplication.translate("LoginWidget", u"Войти как гость", None))
-        self.username_input.setPlaceholderText(QCoreApplication.translate("LoginWidget", u"Введите логин", None))
+        self.username_input.setPlaceholderText(QCoreApplication.translate("LoginWidget", u"Введите ваш рабочий логин", None))
         self.password_input.setPlaceholderText(QCoreApplication.translate("LoginWidget", u"Введите пароль", None))
