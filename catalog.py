@@ -1451,7 +1451,7 @@ class GuestCatalogWindow(QWidget):
         center_layout.addWidget(unit_label)
 
         MANY_THRESHOLD = 5
-        stock_status = "много" if quantity > MANY_THRESHOLD else "мало"
+        stock_status = "Много в наличии" if quantity > MANY_THRESHOLD else "Мало в наличии"
         quantity_label = QLabel(f"Количество: {quantity} ({stock_status})")
         quantity_label.setFont(self.ui.templateQuantityLabel.font())
         quantity_label.setStyleSheet("color: #555555;")
