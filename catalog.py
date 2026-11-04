@@ -41,7 +41,7 @@ def get_db_connection():
             user=db.get("user", "postgres"),
             password=db.get("password", "")
         )
-    raise RuntimeError("Файл конфигурации config.ini не найден или повреждён. Создайте его на основе config.ini.example.")
+    raise RuntimeError(f"Ошибка подключения к PostgreSQL: проверьте статус службы и параметры в config.ini (образец в config.ini.example).")
 
 
 if sys.platform == "win32":
