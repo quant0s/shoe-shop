@@ -1450,7 +1450,9 @@ class GuestCatalogWindow(QWidget):
         unit_label.setWordWrap(True)
         center_layout.addWidget(unit_label)
 
-        quantity_label = QLabel(f"Количество на складе: {quantity}")
+        MANY_THRESHOLD = 5
+        stock_status = "много" if quantity > MANY_THRESHOLD else "мало"
+        quantity_label = QLabel(f"Количество: {quantity} ({stock_status})")
         quantity_label.setFont(self.ui.templateQuantityLabel.font())
         quantity_label.setStyleSheet("color: #555555;")
         quantity_label.setWordWrap(True)
