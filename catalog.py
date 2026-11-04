@@ -3087,7 +3087,7 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon("import/Icon.png"))
 
     def show_catalog(self, user_type, full_name):
-        self.setWindowTitle("Каталог")
+        self.setWindowTitle("Магазин обуви — Каталог товаров")
         self.setWindowIcon(QIcon("import/Icon.png"))
         if user_type == "guest":
             self.stacked_widget.setCurrentWidget(self.guest_window)
