@@ -20,3 +20,6 @@ config.ini
 .env
 *.log
 database.sql
+
+# Резервные копии баз данных
+backups/
