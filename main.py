@@ -9,4 +9,7 @@ import os
 from catalog import main
 
 if __name__ == '__main__':
+    if getattr(sys, "frozen", False):
+        # При запуске из упакованного EXE устанавливаем рабочую директорию рядом с исполняемым файлом
+        os.chdir(os.path.dirname(sys.executable))
     main()

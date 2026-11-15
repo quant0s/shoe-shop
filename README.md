@@ -13,11 +13,11 @@
 - Python 3.10+ (рекомендуется Python 3.11 / 3.13)
 - СУБД PostgreSQL 14+ (локальная или в Docker-контейнере)
 - Docker Desktop с поддержкой Linux-контейнеров и Docker Compose v2 (для контейнерного развёртывания)
-- Библиотеки из файла `requirements.txt` (PySide6, psycopg, pillow, SQLAlchemy)
+- Библиотеки из файла `requirements.txt` (PySide6, psycopg, pillow, SQLAlchemy, PyInstaller)
 
-## Установка и запуск
+## Варианты запуска
 
-### Вариант 1. Запуск с локальной СУБД PostgreSQL
+### Вариант 1. Запуск из исходного кода Python
 1. Клонировать репозиторий:
    ```bash
    git clone https://github.com/quant0s/shoe-shop.git
@@ -25,8 +25,8 @@
    ```
 2. Создать виртуальное окружение и активировать его:
    ```bash
-   python -m venv venv
-   venv\Scripts\activate
+   python -m venv .venv
+   .venv\Scripts\activate
    pip install -r requirements.txt
    ```
 3. Создать базу данных PostgreSQL и импортировать схему:
@@ -46,11 +46,7 @@
 ### Вариант 2. Запуск PostgreSQL через Docker Compose
 Многоконтейнерный запуск СУБД PostgreSQL 14 и диагностического сервиса `db-check`:
 
-1. **Предварительные требования:**
-   - Установленный и запущенный Docker Desktop (режим Linux containers, подсистема WSL 2);
-   - Установленный плагин Docker Compose v2 (`docker compose version`).
-
-2. **Настройка переменных окружения:**
+1. **Настройка переменных окружения:**
    Скопируйте шаблон `.env.example` в локальный файл `.env`:
    ```bash
    copy .env.example .env
@@ -63,99 +59,71 @@
    POSTGRES_HOST_PORT=5433
    ```
 
-3. **Сборка и запуск контейнеров:**
-   Запустите сервисы в фоновом режиме:
+2. **Сборка и запуск контейнеров:**
    ```bash
    docker compose up --build -d
    ```
-   Compose запустит контейнер базы данных `db` (PostgreSQL 14) с проверкой готовности `healthcheck` и одноразовый диагностический сервис `db-check`.
+   Compose запустит контейнер базы данных `db` (PostgreSQL 14) с проверкой готовности `healthcheck`, постоянным томом `db_data` и изолированной сетью `shoe-backend`.
 
-4. **Проверка статуса и журналов:**
-   ```bash
-   docker compose ps
-   docker compose logs db
-   docker compose logs db-check
-   ```
-   Сервис `db` должен находиться в состоянии `healthy`, а `db-check` успешно завершиться (`Exited (0)`).
-
-5. **Импорт базы данных:**
-   Скопируйте файл дампа в контейнер и выполните импорт:
+3. **Импорт базы данных:**
    ```bash
    docker compose cp database/shoe_store.sql db:/tmp/shoe_store.sql
    docker compose exec db psql -v ON_ERROR_STOP=1 -U shoe_user -d shoe_store -f /tmp/shoe_store.sql
    ```
 
-6. **Проверка наполнения БД диагностическим сервисом:**
+4. **Проверка наполнения БД диагностическим сервисом:**
    ```bash
    docker compose run --rm db-check
    ```
-   Ожидаемый вывод: `OK: база=shoe_store; таблиц=5`.
+   Ожидаемый вывод: `OK: база=shoe_store; таблиц=6`.
 
-7. **Подключение десктопного приложения Windows:**
-   В локальном `config.ini` укажите параметры опубликованного порта хоста:
-   ```ini
-   [database]
-   host = localhost
-   port = 5433
-   name = shoe_store
-   user = shoe_user
-   password = your_secure_password
-   ```
-   Запустите десктопное приложение:
+5. **Остановка и запуск сервисов:**
    ```bash
-   python main.py
+   docker compose stop   # остановка
+   docker compose start  # возобновление
+   docker compose down   # удаление контейнеров (том сохраняется)
    ```
 
-8. **Остановка сервисов:**
-   Остановка контейнеров с сохранением состояния:
+### Вариант 3. Упаковка в Windows EXE (PyInstaller) и комплект поставки
+В рамках практического занятия № 14 настроена сборка автономного Windows-приложения:
+
+1. **Сборка исполняемого пакета:**
+   Для повторения сборки используется спецификация `ShoeStore.spec`:
    ```bash
-   docker compose stop
+   python -m PyInstaller --clean --noconfirm ShoeStore.spec
    ```
-   Возобновление работы:
-   ```bash
-   docker compose start
+   Результат сборки помещается в каталог `dist/ShoeStore/` (режим `onedir`).
+
+2. **Автономная работа:**
+   Исполняемый файл `ShoeStore.exe` не требует установленного Python на компьютере пользователя и читает внешнюю конфигурацию из `config.ini`, расположенного рядом с EXE-файлом. Подробное руководство по развертыванию приведено в файле [INSTALL.md](INSTALL.md).
+
+3. **Комплект поставки (ShoeStore-release):**
    ```
-   Полная остановка и удаление контейнеров (без удаления томов данных):
-   ```bash
-   docker compose down
+   ShoeStore-release/
+   ├── application/ShoeStore/     # Сборка onedir (ShoeStore.exe, _internal)
+   ├── deployment/                # Скрипты развертывания БД
+   │   ├── compose.yaml
+   │   ├── .env.example
+   │   └── database/shoe_store.sql
+   ├── config.ini.example         # Шаблон настроек подключения
+   ├── README.md                  # Описание проекта
+   └── INSTALL.md                 # Инструкция по установке
    ```
-
-### Постоянное хранение данных и сети (Docker Volumes & Networks)
-В рамках практического занятия № 13 настроена устойчивая схема сохранения данных и изолированная сеть:
-
-1. **Именованный том `db_data`:**
-   Данные PostgreSQL сохраняются в именованном томе `db_data` (примонтированном к `/var/lib/postgresql/data`), что обеспечивает сохранность таблиц и записей при остановке (`docker compose stop`), пересоздании (`docker compose up -d --force-recreate db`) и удалении контейнеров (`docker compose down`).
-   > **ВНИМАНИЕ:** Команда `docker compose down -v` удаляет именованные тома проекта и безвозвратно стирает данные базы данных! Не используйте флаг `-v` при штатной работе.
-
-2. **Резервное копирование и восстановление:**
-   - Создание резервной копии базы данных:
-     ```bash
-     docker compose exec db pg_dump -U shoe_user -d shoe_store -f /tmp/backup.sql
-     docker compose cp db:/tmp/backup.sql ./backups/shoe_store_backup.sql
-     ```
-   - Каталог `backups/` исключен из контроля версий через `.gitignore`.
-   - Восстановление базы данных из резервной копии:
-     ```bash
-     docker compose cp ./backups/shoe_store_backup.sql db:/tmp/restore.sql
-     docker compose exec db psql -v ON_ERROR_STOP=1 -U shoe_user -d shoe_store -f /tmp/restore.sql
-     ```
-
-3. **Пользовательская сеть `shoe-backend`:**
-   - Контейнеры объединены в bridge-сеть `shoe-backend` с внутренним DNS-разрешением;
-   - Микросервис `db-check` обращается к базе данных по внутреннему имени сервиса `db:5432`;
-   - Десктопное приложение на хосте Windows подключается через локальный адрес loopback `127.0.0.1:5433` (порт 5432 внутри контейнера). Ограничение публикации порта адресом `127.0.0.1` предотвращает несанкционированный внешний сетевой доступ к учебной СУБД.
 
 ## Структура репозитория
 - `main.py` — главная точка входа в приложение;
 - `catalog.py` — контроллер каталога товаров, авторизации и управления заказами;
-- `compose.yaml` — конфигурация сервисов PostgreSQL и db-check с томом `db_data` и сетью `shoe-backend`;
+- `ShoeStore.spec` — спецификация сборки PyInstaller для создания Windows EXE;
+- `compose.yaml` — конфигурация запуска сервисов PostgreSQL и db-check в Docker Compose;
 - `docker/db-check/` — исходный код и Dockerfile легковесного сервиса проверки подключения к БД;
 - `.env.example` — образец конфигурации переменных окружения для контейнеризации;
 - `.dockerignore` — исключение лишних файлов и секретов из контекста сборки Docker;
 - `resources/` — графические ресурсы, иконки и изображения товаров;
+- `import/` — фотографии моделей обуви каталога;
 - `database/` — SQL-скрипт создания и наполнения базы данных `shoe_store.sql`;
 - `docs/` — сопроводительная документация и ER-диаграмма базы данных (`er_diagram.pdf`);
-- `config.ini.example` — шаблон конфигурационного файла подключения к БД.
+- `config.ini.example` — шаблон конфигурационного файла подключения к БД;
+- `INSTALL.md` — руководство по установке и запуску автономного комплекта поставки.
 
 ## Автор
 Новиков Илья, группа ЩПКО-04-23

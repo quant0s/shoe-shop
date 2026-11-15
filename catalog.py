@@ -28,7 +28,10 @@ import configparser
 def get_db_connection():
     """Получение подключения к БД PostgreSQL из конфигурационного файла config.ini."""
     config = configparser.ConfigParser()
-    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.ini")
+    if getattr(sys, "frozen", False):
+        config_path = os.path.join(os.path.dirname(sys.executable), "config.ini")
+    else:
+        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.ini")
     if not os.path.exists(config_path):
         config_path = "config.ini"
     config.read(config_path, encoding="utf-8")
