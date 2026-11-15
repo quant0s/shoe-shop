@@ -11,10 +11,13 @@
 
 ## Требования
 - Python 3.10+ (рекомендуется Python 3.11 / 3.13)
-- СУБД PostgreSQL 14+
+- СУБД PostgreSQL 14+ (локальная или в Docker-контейнере)
+- Docker Desktop с поддержкой Linux-контейнеров и Docker Compose v2 (для контейнерного развёртывания)
 - Библиотеки из файла `requirements.txt` (PySide6, psycopg, pillow, SQLAlchemy)
 
 ## Установка и запуск
+
+### Вариант 1. Запуск с локальной СУБД PostgreSQL
 1. Клонировать репозиторий:
    ```bash
    git clone https://github.com/quant0s/shoe-shop.git
@@ -40,9 +43,90 @@
    python main.py
    ```
 
+### Вариант 2. Запуск PostgreSQL через Docker Compose
+Многоконтейнерный запуск СУБД PostgreSQL 14 и диагностического сервиса `db-check`:
+
+1. **Предварительные требования:**
+   - Установленный и запущенный Docker Desktop (режим Linux containers, подсистема WSL 2);
+   - Установленный плагин Docker Compose v2 (`docker compose version`).
+
+2. **Настройка переменных окружения:**
+   Скопируйте шаблон `.env.example` в локальный файл `.env`:
+   ```bash
+   copy .env.example .env
+   ```
+   В файле `.env` задаются параметры (файл добавлен в `.gitignore` и не коммитится):
+   ```dotenv
+   POSTGRES_DB=shoe_store
+   POSTGRES_USER=shoe_user
+   POSTGRES_PASSWORD=your_secure_password
+   POSTGRES_HOST_PORT=5433
+   ```
+
+3. **Сборка и запуск контейнеров:**
+   Запустите сервисы в фоновом режиме:
+   ```bash
+   docker compose up --build -d
+   ```
+   Compose запустит контейнер базы данных `db` (PostgreSQL 14) с проверкой готовности `healthcheck` и одноразовый диагностический сервис `db-check`.
+
+4. **Проверка статуса и журналов:**
+   ```bash
+   docker compose ps
+   docker compose logs db
+   docker compose logs db-check
+   ```
+   Сервис `db` должен находиться в состоянии `healthy`, а `db-check` успешно завершиться (`Exited (0)`).
+
+5. **Импорт базы данных:**
+   Скопируйте файл дампа в контейнер и выполните импорт:
+   ```bash
+   docker compose cp database/shoe_store.sql db:/tmp/shoe_store.sql
+   docker compose exec db psql -v ON_ERROR_STOP=1 -U shoe_user -d shoe_store -f /tmp/shoe_store.sql
+   ```
+
+6. **Проверка наполнения БД диагностическим сервисом:**
+   ```bash
+   docker compose run --rm db-check
+   ```
+   Ожидаемый вывод: `OK: база=shoe_store; таблиц=5`.
+
+7. **Подключение десктопного приложения Windows:**
+   В локальном `config.ini` укажите параметры опубликованного порта хоста:
+   ```ini
+   [database]
+   host = localhost
+   port = 5433
+   name = shoe_store
+   user = shoe_user
+   password = your_secure_password
+   ```
+   Запустите десктопное приложение:
+   ```bash
+   python main.py
+   ```
+
+8. **Остановка сервисов:**
+   Остановка контейнеров с сохранением состояния:
+   ```bash
+   docker compose stop
+   ```
+   Возобновление работы:
+   ```bash
+   docker compose start
+   ```
+   Полная остановка и удаление контейнеров:
+   ```bash
+   docker compose down
+   ```
+
 ## Структура репозитория
 - `main.py` — главная точка входа в приложение;
 - `catalog.py` — контроллер каталога товаров, авторизации и управления заказами;
+- `compose.yaml` — конфигурация запуска сервисов PostgreSQL и db-check в Docker Compose;
+- `docker/db-check/` — исходный код и Dockerfile легковесного сервиса проверки подключения к БД;
+- `.env.example` — образец конфигурации переменных окружения для контейнеризации;
+- `.dockerignore` — исключение лишних файлов и секретов из контекста сборки Docker;
 - `resources/` — графические ресурсы, иконки и изображения товаров;
 - `database/` — SQL-скрипт создания и наполнения базы данных `shoe_store.sql`;
 - `docs/` — сопроводительная документация и ER-диаграмма базы данных (`er_diagram.pdf`);

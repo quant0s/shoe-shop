@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict Fga4iYJbeSOdMympab42Xy2nTD5WAoBL9MGB3FJuX9DoD7kNFS8yqcrlbCkZ0I7
+-- \restrict Fga4iYJbeSOdMympab42Xy2nTD5WAoBL9MGB3FJuX9DoD7kNFS8yqcrlbCkZ0I7
 
 -- Dumped from database version 18.0
 -- Dumped by pg_dump version 18.0
@@ -10,7 +10,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
+-- SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -430,5 +430,5 @@ ALTER TABLE ONLY public.orders_items
 -- PostgreSQL database dump complete
 --
 
-\unrestrict Fga4iYJbeSOdMympab42Xy2nTD5WAoBL9MGB3FJuX9DoD7kNFS8yqcrlbCkZ0I7
+-- \unrestrict Fga4iYJbeSOdMympab42Xy2nTD5WAoBL9MGB3FJuX9DoD7kNFS8yqcrlbCkZ0I7
 
