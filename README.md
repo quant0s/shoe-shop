@@ -11,34 +11,38 @@
 
 ## Требования
 - Python 3.10+ (рекомендуется Python 3.11 / 3.13)
-- СУБД PostgreSQL 14+ (локальная или в Docker-контейнере)
+- СУБД PostgreSQL 14+ (локальная на порту 5432 или в Docker-контейнере на порту 5433)
 - Docker Desktop с поддержкой Linux-контейнеров и Docker Compose v2 (для контейнерного развёртывания)
 - Библиотеки из файла `requirements.txt` (PySide6, psycopg, pillow, SQLAlchemy, PyInstaller)
 
 ## Варианты запуска
 
 ### Вариант 1. Запуск из исходного кода Python
-1. Клонировать репозиторий:
-   ```bash
-   git clone https://github.com/quant0s/shoe-shop.git
-   cd shoe-shop
-   ```
-2. Создать виртуальное окружение и активировать его:
+1. Создать виртуальное окружение и активировать его:
    ```bash
    python -m venv .venv
    .venv\Scripts\activate
    pip install -r requirements.txt
    ```
-3. Создать базу данных PostgreSQL и импортировать схему:
+2. Подготовить базу данных PostgreSQL (`shoe_shop`) и импортировать схему:
    ```bash
    psql -U postgres -d shoe_shop -f database/shoe_store.sql
    ```
-4. Скопировать шаблон настроек и указать параметры подключения:
+3. Скопировать шаблон настроек и указать параметры подключения:
    ```bash
    copy config.ini.example config.ini
    ```
-   Отредактируйте `config.ini`, указав актуальный пароль пользователя PostgreSQL.
-5. Запустить приложение:
+   В `config.ini` задаются параметры подключения:
+   ```ini
+   [database]
+   host = 127.0.0.1
+   port = 5433
+   name = shoe_shop
+   user = postgres
+   password = p@ssw0rd
+   ```
+   *(Если используется локальная служба PostgreSQL, укажите `port = 5432`)*.
+4. Запустить приложение:
    ```bash
    python main.py
    ```
@@ -51,69 +55,85 @@
    ```bash
    copy .env.example .env
    ```
-   В файле `.env` задаются параметры (файл добавлен в `.gitignore` и не коммитится):
+   В файле `.env` задаются актуальные параметры базы данных:
    ```dotenv
-   POSTGRES_DB=shoe_store
-   POSTGRES_USER=shoe_user
-   POSTGRES_PASSWORD=your_secure_password
+   POSTGRES_DB=shoe_shop
+   POSTGRES_USER=postgres
+   POSTGRES_PASSWORD=p@ssw0rd
    POSTGRES_HOST_PORT=5433
    ```
 
-2. **Сборка и запуск контейнеров:**
+2. **Запуск контейнеров:**
    ```bash
-   docker compose up --build -d
+   docker compose up -d
    ```
    Compose запустит контейнер базы данных `db` (PostgreSQL 14) с проверкой готовности `healthcheck`, постоянным томом `db_data` и изолированной сетью `shoe-backend`.
 
-3. **Импорт базы данных:**
+3. **Импорт базы данных (при первом запуске на чистом томе):**
    ```bash
    docker compose cp database/shoe_store.sql db:/tmp/shoe_store.sql
-   docker compose exec db psql -v ON_ERROR_STOP=1 -U shoe_user -d shoe_store -f /tmp/shoe_store.sql
+   docker compose exec db psql -v ON_ERROR_STOP=1 -U postgres -d shoe_shop -f /tmp/shoe_store.sql
    ```
 
-4. **Проверка наполнения БД диагностическим сервисом:**
+4. **Проверка состояния БД диагностическим сервисом:**
    ```bash
    docker compose run --rm db-check
    ```
-   Ожидаемый вывод: `OK: база=shoe_store; таблиц=6`.
+   Ожидаемый вывод: `OK: база=shoe_shop; таблиц=5`.
 
-5. **Остановка и запуск сервисов:**
+5. **Управление контейнерами:**
    ```bash
-   docker compose stop   # остановка
-   docker compose start  # возобновление
-   docker compose down   # удаление контейнеров (том сохраняется)
+   docker compose stop   # временная остановка (данные сохраняются)
+   docker compose start  # возобновление работы
+   docker compose down   # удаление контейнеров (том db_data сохраняется)
    ```
 
-### Вариант 3. Упаковка в Windows EXE (PyInstaller) и комплект поставки
-В рамках практического занятия № 14 настроена сборка автономного Windows-приложения:
+### Вариант 3. Автономный запуск Windows EXE (PyInstaller) в папке проекта
+В рамках практического занятия № 14 настроена автономная сборка Windows-приложения (onedir), готовая к запуску прямо из каталога `dist/ShoeStore`:
 
-1. **Сборка исполняемого пакета:**
-   Для повторения сборки используется спецификация `ShoeStore.spec`:
+1. **Файлы сборки в проекте:**
+   Собранное приложение находится в каталоге `dist/ShoeStore/`:
+   ```
+   dist/ShoeStore/
+   ├── ShoeStore.exe       # Главный исполняемый файл приложения
+   ├── config.ini          # Внешний конфигурационный файл подключения к БД
+   ├── import/             # Каталог фотографий товаров и иконки
+   └── _internal/          # Упакованные зависимости (Qt, Python DLL)
+   ```
+
+2. **Настройка подключения для EXE:**
+   В файле `dist/ShoeStore/config.ini` указываются параметры подключения:
+   ```ini
+   [database]
+   host = 127.0.0.1
+   port = 5433
+   name = shoe_shop
+   user = postgres
+   password = p@ssw0rd
+   ```
+   - При работе с контейнером Docker Compose используйте `port = 5433`;
+   - При работе с локально установленной службой PostgreSQL укажите `port = 5432`.
+   *(Приложение поддерживает автоматическое резервное переключение между портами 5433 и 5432).*
+
+3. **Запуск исполняемого файла:**
+   Запуск из консоли PowerShell:
+   ```powershell
+   .\dist\ShoeStore\ShoeStore.exe
+   ```
+   Либо двойным кликом по файлу `ShoeStore.exe` в проводнике Windows в папке `dist\ShoeStore`. Приложение открывает графический интерфейс каталога товаров, загружает фотографии из папки `import` и подключается к СУБД.
+
+4. **Повторная пересборка EXE (при необходимости):**
    ```bash
    python -m PyInstaller --clean --noconfirm ShoeStore.spec
-   ```
-   Результат сборки помещается в каталог `dist/ShoeStore/` (режим `onedir`).
-
-2. **Автономная работа:**
-   Исполняемый файл `ShoeStore.exe` не требует установленного Python на компьютере пользователя и читает внешнюю конфигурацию из `config.ini`, расположенного рядом с EXE-файлом. Подробное руководство по развертыванию приведено в файле [INSTALL.md](INSTALL.md).
-
-3. **Комплект поставки (ShoeStore-release):**
-   ```
-   ShoeStore-release/
-   ├── application/ShoeStore/     # Сборка onedir (ShoeStore.exe, _internal)
-   ├── deployment/                # Скрипты развертывания БД
-   │   ├── compose.yaml
-   │   ├── .env.example
-   │   └── database/shoe_store.sql
-   ├── config.ini.example         # Шаблон настроек подключения
-   ├── README.md                  # Описание проекта
-   └── INSTALL.md                 # Инструкция по установке
+   copy config.ini dist\ShoeStore\config.ini
+   xcopy /E /I import dist\ShoeStore\import
    ```
 
 ## Структура репозитория
 - `main.py` — главная точка входа в приложение;
 - `catalog.py` — контроллер каталога товаров, авторизации и управления заказами;
 - `ShoeStore.spec` — спецификация сборки PyInstaller для создания Windows EXE;
+- `dist/ShoeStore/` — автономная сборка Windows EXE (ShoeStore.exe, config.ini, import, _internal);
 - `compose.yaml` — конфигурация запуска сервисов PostgreSQL и db-check в Docker Compose;
 - `docker/db-check/` — исходный код и Dockerfile легковесного сервиса проверки подключения к БД;
 - `.env.example` — образец конфигурации переменных окружения для контейнеризации;
@@ -123,7 +143,7 @@
 - `database/` — SQL-скрипт создания и наполнения базы данных `shoe_store.sql`;
 - `docs/` — сопроводительная документация и ER-диаграмма базы данных (`er_diagram.pdf`);
 - `config.ini.example` — шаблон конфигурационного файла подключения к БД;
-- `INSTALL.md` — руководство по установке и запуску автономного комплекта поставки.
+- `INSTALL.md` — краткая памятка по развертыванию.
 
 ## Автор
 Новиков Илья, группа ЩПКО-04-23

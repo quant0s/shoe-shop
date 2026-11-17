@@ -28,23 +28,62 @@ import configparser
 def get_db_connection():
     """Получение подключения к БД PostgreSQL из конфигурационного файла config.ini."""
     config = configparser.ConfigParser()
+    candidates = []
     if getattr(sys, "frozen", False):
-        config_path = os.path.join(os.path.dirname(sys.executable), "config.ini")
+        exe_dir = os.path.dirname(sys.executable)
+        candidates.extend([
+            os.path.join(exe_dir, "config.ini"),
+            os.path.join(exe_dir, "..", "config.ini"),
+            os.path.join(exe_dir, "..", "..", "config.ini"),
+        ])
     else:
-        config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.ini")
-    if not os.path.exists(config_path):
-        config_path = "config.ini"
-    config.read(config_path, encoding="utf-8")
+        app_dir = os.path.dirname(os.path.abspath(__file__))
+        candidates.extend([
+            os.path.join(app_dir, "config.ini"),
+            os.path.join(app_dir, "..", "config.ini"),
+        ])
+    candidates.append("config.ini")
+    config_path = next((p for p in candidates if os.path.exists(p)), "config.ini")
+
+    if os.path.exists(config_path):
+        config.read(config_path, encoding="utf-8")
+
     if "database" in config:
         db = config["database"]
-        return psycopg.connect(
-            host=db.get("host", "localhost"),
-            port=db.get("port", "5432"),
-            dbname=db.get("name", "shoe_shop"),
-            user=db.get("user", "postgres"),
-            password=db.get("password", "")
-        )
-    raise RuntimeError(f"Ошибка подключения к PostgreSQL: проверьте статус службы и параметры в config.ini (образец в config.ini.example).")
+        host = db.get("host", "127.0.0.1")
+        if host == "localhost":
+            host = "127.0.0.1"
+        try:
+            primary_port = int(db.get("port", "5433"))
+        except ValueError:
+            primary_port = 5433
+        dbname = db.get("name", "shoe_shop")
+        user = db.get("user", "postgres")
+        password = db.get("password", "")
+
+        # Список портов для подключения: сначала порт из config.ini, затем резервный (5433 <-> 5432)
+        ports_to_try = [primary_port]
+        alt_port = 5432 if primary_port != 5432 else 5433
+        if alt_port not in ports_to_try:
+            ports_to_try.append(alt_port)
+
+        last_error = None
+        for p in ports_to_try:
+            try:
+                return psycopg.connect(
+                    host=host,
+                    port=p,
+                    dbname=dbname,
+                    user=user,
+                    password=password,
+                    connect_timeout=3
+                )
+            except Exception as e:
+                last_error = e
+                continue
+
+        raise RuntimeError(f"Ошибка подключения к PostgreSQL ({host}:{primary_port}/{dbname}): {last_error}")
+    raise RuntimeError("Ошибка конфигурации: файл config.ini не найден или отсутствует секция [database].")
 
 
 if sys.platform == "win32":
