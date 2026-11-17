@@ -54,35 +54,24 @@ def get_db_connection():
         if host == "localhost":
             host = "127.0.0.1"
         try:
-            primary_port = int(db.get("port", "5433"))
+            port = int(db.get("port", "5433"))
         except ValueError:
-            primary_port = 5433
+            port = 5433
         dbname = db.get("name", "shoe_shop")
         user = db.get("user", "postgres")
         password = db.get("password", "")
 
-        # Список портов для подключения: сначала порт из config.ini, затем резервный (5433 <-> 5432)
-        ports_to_try = [primary_port]
-        alt_port = 5432 if primary_port != 5432 else 5433
-        if alt_port not in ports_to_try:
-            ports_to_try.append(alt_port)
-
-        last_error = None
-        for p in ports_to_try:
-            try:
-                return psycopg.connect(
-                    host=host,
-                    port=p,
-                    dbname=dbname,
-                    user=user,
-                    password=password,
-                    connect_timeout=3
-                )
-            except Exception as e:
-                last_error = e
-                continue
-
-        raise RuntimeError(f"Ошибка подключения к PostgreSQL ({host}:{primary_port}/{dbname}): {last_error}")
+        try:
+            return psycopg.connect(
+                host=host,
+                port=port,
+                dbname=dbname,
+                user=user,
+                password=password,
+                connect_timeout=3
+            )
+        except Exception as e:
+            raise RuntimeError(f"Не удалось подключиться к PostgreSQL ({host}:{port}/{dbname}): {e}")
     raise RuntimeError("Ошибка конфигурации: файл config.ini не найден или отсутствует секция [database].")
 
 
